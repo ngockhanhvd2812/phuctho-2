@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kế hoạch Phát triển KT-XH Xã Phúc Thọ 2025-2030</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as an interactive dashboard, moving from a high-level vision to detailed, explorable data. It starts with a 'Vision & Key Metrics' overview, followed by 'Detailed Targets' with interactive charts, then 'Strategic Breakthroughs' and 'Regional Zoning' presented as interactive cards for deep dives, and concludes with a powerful, filterable 'Implementation Roadmap' to make the vast list of tasks manageable. This thematic, top-down structure was chosen over a linear report format to enhance user engagement, facilitate quick access to specific information, and provide a clear, intuitive path for understanding the complex plan. -->
+    <!-- Visualization & Content Choices: 
+        - Key Metrics (Revenue, Income): Goal=Inform -> Method=Dynamic Stat Cards -> Interaction=None -> Justification=Quickly convey the plan's ambition.
+        - Economic/Social Targets: Goal=Compare/Inform -> Method=Bar/Doughnut Charts (Chart.js) -> Interaction=Tooltips on hover -> Justification=Effectively visualize quantitative goals and proportions. Bar charts for absolute values, doughnut charts for percentages.
+        - Strategic Breakthroughs/Zones: Goal=Organize/Explain -> Method=Interactive HTML/CSS Cards -> Interaction=Click to reveal details -> Justification=Uses progressive disclosure to present complex strategies without overwhelming the user.
+        - Implementation Tasks (Appendix 02): Goal=Explore/Filter -> Method=Dynamic HTML Table with JS controls -> Interaction=Search, dropdown filters (by department, year) -> Justification=Transforms a static, dense list into a usable, interactive tool for monitoring and accountability.
+        - All visualizations are implemented using Chart.js (Canvas) or structured HTML/CSS with Tailwind, adhering to the NO SVG/Mermaid constraint.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #2563eb; /* blue-600 */
+            border-bottom-color: #2563eb;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .card-flip {
+            perspective: 1000px;
+        }
+        .card-flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flip.flipped .card-flip-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.75rem;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            overflow-y: auto;
+            justify-content: flex-start;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-blue-600">Phúc Thọ 2030</h1>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#tong-quan" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Tổng quan</a>
+                    <a href="#muc-tieu" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Mục tiêu</a>
+                    <a href="#dot-pha" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Đột phá</a>
+                    <a href="#lo-trinh" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Lộ trình</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <!-- Section 1: Vision & Key Metrics -->
+        <section id="tong-quan" class="text-center mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-5xl font-bold text-slate-900 mb-4">Tầm nhìn đến năm 2030</h2>
+            <p class="text-lg md:text-xl max-w-3xl mx-auto text-slate-600 mb-10">Phấn đấu xây dựng Phúc Thọ trở thành xã nông thôn mới nâng cao, với kinh tế phát triển, xã hội văn minh, môi trường bền vững và người dân có cuộc sống ấm no, hạnh phúc.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-500 mb-2">Thu ngân sách (2025-2030)</h3>
+                    <p class="text-4xl font-bold text-blue-600">5.200 <span class="text-2xl font-medium">tỷ đồng</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-500 mb-2">Thu nhập bình quân (2030)</h3>
+                    <p class="text-4xl font-bold text-green-600">145 <span class="text-2xl font-medium">triệu/người</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-500 mb-2">Tăng trưởng sản xuất</h3>
+                    <p class="text-4xl font-bold text-amber-600">15.5%<span class="text-2xl font-medium">/năm</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Key Objectives -->
+        <section id="muc-tieu" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Các Chỉ tiêu Chủ yếu</h2>
+                <p class="max-w-2xl mx-auto text-slate-600">Trực quan hóa các mục tiêu kinh tế, xã hội và môi trường cốt lõi, là thước đo cho sự phát triển toàn diện của xã trong giai đoạn tới.</p>
+            </div>
+
+            <div class="flex justify-center mb-8">
+                <div id="chart-tabs" class="flex space-x-2 bg-slate-200 p-1 rounded-full">
+                    <button data-chart="kinhte" class="tab-button px-4 py-2 rounded-full text-sm font-semibold active">Kinh tế</button>
+                    <button data-chart="xahoi" class="tab-button px-4 py-2 rounded-full text-sm font-semibold">Xã hội</button>
+                    <button data-chart="moitruong" class="tab-button px-4 py-2 rounded-full text-sm font-semibold">Môi trường</button>
+                </div>
+            </div>
+
+            <div id="charts-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Charts will be rendered here by JS -->
+            </div>
+        </section>
+
+        <!-- Section 3: Strategic Breakthroughs -->
+        <section id="dot-pha" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Bốn Khâu Đột phá Chiến lược</h2>
+                <p class="max-w-2xl mx-auto text-slate-600">Đây là bốn động lực tăng trưởng cốt lõi, được xác định để tạo ra sự thay đổi mang tính bước ngoặt, thúc đẩy xã Phúc Thọ phát triển nhanh và bền vững. Nhấn vào từng thẻ để xem chi tiết.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Breakthrough cards will be rendered here -->
+            </div>
+        </section>
+        
+        <!-- Section 4: Regional Development Orientation -->
+        <section id="vung-kinh-te" class="mb-16 md:mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Định hướng Phát triển 4 Vùng Kinh tế</h2>
+                <p class="max-w-2xl mx-auto text-slate-600">Kế hoạch phân chia xã thành 4 vùng kinh tế động lực với các chức năng chuyên biệt, nhằm khai thác tối đa tiềm năng, lợi thế của từng khu vực.</p>
+            </div>
+            <div id="economic-zones-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <!-- Economic zones will be rendered here -->
+            </div>
+        </section>
+
+        <!-- Section 5: Roadmap & Assignment -->
+        <section id="lo-trinh">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Lộ trình & Phân công Nhiệm vụ</h2>
+                <p class="max-w-3xl mx-auto text-slate-600">Đây là công cụ tra cứu chi tiết các đề án, chương trình, kế hoạch chiến lược được phân công cho từng đơn vị. Sử dụng các bộ lọc để tìm kiếm thông tin nhanh chóng và chính xác.</p>
+            </div>
+
+            <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <input type="text" id="task-search" placeholder="🔎 Tìm kiếm theo tên nhiệm vụ..." class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                    <select id="department-filter" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <option value="all">Tất cả đơn vị</option>
+                    </select>
+                    <select id="year-filter" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        <option value="all">Tất cả thời gian</option>
+                        <option value="2025">Năm 2025</option>
+                        <option value="2026">Năm 2026</option>
+                        <option value="2027">Năm 2027</option>
+                        <option value="2028">Năm 2028</option>
+                        <option value="2029">Năm 2029</option>
+                        <option value="2030">Năm 2030</option>
+                        <option value="annual">Hàng năm</option>
+                    </select>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 w-1/12">STT</th>
+                                <th scope="col" class="px-6 py-3 w-5/12">Nội dung công việc</th>
+                                <th scope="col" class="px-6 py-3 w-3/12">Đơn vị chủ trì</th>
+                                <th scope="col" class="px-6 py-3 w-3/12">Thời gian hoàn thành</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-table-body">
+                            <!-- Task rows will be populated by JS -->
+                        </tbody>
+                    </table>
+                     <p id="no-results" class="text-center py-8 text-slate-500 hidden">Không tìm thấy kết quả phù hợp.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-16">
+        <div class="container mx-auto px-4 py-6 text-center text-slate-400 text-sm">
+            <p>&copy; 2025 | UBND Xã Phúc Thọ</p>
+            <p>Báo cáo tương tác được xây dựng để phục vụ công tác chỉ đạo, điều hành và giám sát.</p>
+        </div>
+    </footer>
+
+<script>
+const AppData = {
+    charts: {
+        kinhte: [
+            {
+                type: 'bar',
+                title: 'Giá trị sản xuất các ngành (tỷ đồng)',
+                labels: ['Nông nghiệp', 'Công nghiệp-XD', 'Thương mại-DV'],
+                data: [1800, 15500, 10500],
+                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+            },
+            {
+                type: 'bar',
+                title: 'Cơ cấu kinh tế (%)',
+                labels: ['Nông nghiệp', 'Công nghiệp-XD', 'Thương mại-DV'],
+                data: [6.5, 55.8, 37.7],
+                backgroundColor: 'rgba(22, 163, 74, 0.7)',
+                borderColor: 'rgba(22, 163, 74, 1)',
+            }
+        ],
+        xahoi: [
+            {
+                type: 'doughnut',
+                title: 'Tỷ lệ lao động qua đào tạo',
+                labels: ['Đã đào tạo', 'Chưa đào tạo'],
+                data: [85, 15],
+                backgroundColor: ['rgba(217, 119, 6, 0.8)', 'rgba(229, 231, 235, 1)'],
+                borderColor: ['rgba(217, 119, 6, 1)', 'rgba(209, 213, 219, 1)'],
+                target: '85%'
+            },
+            {
+                type: 'doughnut',
+                title: 'Tỷ lệ trường công lập đạt chuẩn quốc gia',
+                labels: ['Đạt chuẩn', 'Chưa đạt'],
+                data: [100, 0],
+                backgroundColor: ['rgba(139, 92, 246, 0.8)', 'rgba(229, 231, 235, 1)'],
+                borderColor: ['rgba(139, 92, 246, 1)', 'rgba(209, 213, 219, 1)'],
+                target: '100%'
+            }
+        ],
+        moitruong: [
+            {
+                type: 'doughnut',
+                title: 'Tỷ lệ hộ dân được dùng nước sạch',
+                labels: ['Được sử dụng', 'Chưa được'],
+                data: [100, 0],
+                backgroundColor: ['rgba(37, 99, 235, 0.8)', 'rgba(229, 231, 235, 1)'],
+                borderColor: ['rgba(37, 99, 235, 1)', 'rgba(209, 213, 219, 1)'],
+                target: '100%'
+            },
+            {
+                type: 'doughnut',
+                title: 'Tỷ lệ chất thải rắn được thu gom, xử lý',
+                labels: ['Được xử lý', 'Chưa được'],
+                data: [100, 0],
+                backgroundColor: ['rgba(22, 163, 74, 0.8)', 'rgba(229, 231, 235, 1)'],
+                borderColor: ['rgba(22, 163, 74, 1)', 'rgba(209, 213, 219, 1)'],
+                target: '100%'
+            }
+        ]
+    },
+    breakthroughs: [
+        { 
+            icon: '💻', 
+            title: 'Chuyển đổi số', 
+            description: 'Phát triển chính quyền số, kinh tế số và xã hội số. Hiện đại hóa quản lý, nâng cao năng lực cạnh tranh và cải thiện chất lượng cuộc sống người dân.',
+            details: 'Tập trung xây dựng hạ tầng số, cơ sở dữ liệu dùng chung, cung cấp 100% dịch vụ công trực tuyến toàn trình, và hỗ trợ doanh nghiệp ứng dụng công nghệ số vào sản xuất kinh doanh.'
+        },
+        { 
+            icon: '🌐', 
+            title: 'Hạ tầng kết nối', 
+            description: 'Hoàn thiện đồng bộ kết cấu hạ tầng, đặc biệt là giao thông, để tạo động lực phát triển kinh tế - xã hội, tăng cường kết nối vùng.',
+            details: 'Ưu tiên đầu tư các tuyến đường trục chính, hạ tầng các cụm công nghiệp, và hạ tầng thương mại - dịch vụ. Đảm bảo quy hoạch đi trước một bước.'
+        },
+        { 
+            icon: '🎓', 
+            title: 'Nhân lực chất lượng cao', 
+            description: 'Đào tạo và thu hút nguồn nhân lực đáp ứng yêu cầu của cuộc cách mạng công nghiệp 4.0 và quá trình chuyển dịch cơ cấu kinh tế.',
+            details: 'Gắn kết giáo dục nghề nghiệp với nhu cầu doanh nghiệp. Có chính sách thu hút nhân tài, chuyên gia. Nâng cao chất lượng đội ngũ cán bộ, công chức.'
+        },
+        { 
+            icon: '🎭', 
+            title: 'Công nghiệp văn hóa', 
+            description: 'Khai thác tiềm năng, lợi thế về văn hóa, lịch sử để phát triển du lịch, dịch vụ, tạo ra các sản phẩm văn hóa có giá trị gia tăng cao.',
+            details: 'Tập trung phát triển du lịch tâm linh, du lịch sinh thái, làng nghề. Bảo tồn và phát huy giá trị các di sản văn hóa như Đình Tường Phiêu, sông Tích.'
+        }
+    ],
+    economicZones: [
+        { icon: '🏢', title: 'Vùng 1: Đô thị - Dịch vụ', description: 'Phát triển dọc các trục đường lớn. Tập trung vào thương mại, dịch vụ tổng hợp, tài chính, ngân hàng và nhà ở chất lượng cao.' },
+        { icon: '🏭', title: 'Vùng 2: Công nghiệp - TTCN', description: 'Phát triển các cụm công nghiệp, làng nghề. Thu hút đầu tư vào các ngành công nghệ cao, thân thiện môi trường.' },
+        { icon: '🌱', title: 'Vùng 3: Nông nghiệp CNC', description: 'Phát triển nông nghiệp ứng dụng công nghệ cao, sản xuất theo chuỗi giá trị, gắn với xây dựng thương hiệu và tiêu thụ sản phẩm.' },
+        { icon: '🏞️', title: 'Vùng 4: Du lịch - Sinh thái', description: 'Khai thác cảnh quan ven sông Tích, các di tích lịch sử để phát triển du lịch sinh thái, nghỉ dưỡng, trải nghiệm văn hóa.' }
+    ],
+    tasks: [
+        { no: 1, content: 'Đề án Phát triển kinh tế đô thị xã Phúc Thọ giai đoạn 2026 -2030, định hướng đến năm 2045', department: 'Phòng Kinh tế', time: 'Quý II/2026' },
+        { no: 2, content: 'Đề án Phát triển kinh tế nông thôn gắn với xây dựng nông thôn mới nâng cao xã Phúc Thọ giai đoạn 2026 -2030', department: 'Phòng Kinh tế', time: 'Quý II/2026' },
+        { no: 3, content: 'Đề án Phát triển kinh tế ban đêm trên địa bàn xã Phúc Thọ đến năm 2030', department: 'Phòng Kinh tế', time: 'Quý IV/2026' },
+        { no: 4, content: 'Đề án Phát triển kinh tế tập thể, hợp tác xã trên địa bàn xã Phúc Thọ giai đoạn 2026 -2030', department: 'Phòng Kinh tế', time: 'Quý II/2026' },
+        { no: 5, content: 'Đề án nâng cao hiệu quả quản lý, khai thác, sử dụng tài sản công trên địa bàn xã Phúc Thọ', department: 'Phòng Kinh tế', time: 'Quý III/2026' },
+        { no: 6, content: 'Đề án phát triển các Cụm công nghiệp trên địa bàn xã Phúc Thọ đến năm 2030, tầm nhìn đến năm 2045', department: 'Phòng Kinh tế', time: 'Quý III/2026' },
+        { no: 7, content: 'Chương trình phát triển hạ tầng kỹ thuật các Cụm công nghiệp trên địa bàn xã', department: 'Phòng Kinh tế', time: '2026-2030' },
+        { no: 8, content: 'Đề án phát triển các làng nghề trên địa bàn xã Phúc Thọ đến năm 2030, tầm nhìn đến năm 2045', department: 'Phòng Kinh tế', time: 'Quý IV/2026' },
+        { no: 9, content: 'Đề án tiếp tục phát triển làng nghề hoa cây cảnh; hoàn thiện, phát triển hạ tầng điểm đến du lịch nông thôn Tích Giang...', department: 'Phòng Kinh tế', time: 'Quý IV/2026' },
+        { no: 10, content: 'Đề án quảng bá, giới thiệu, phát triển Du lịch Tích Giang, các di tích lịch sử, làng nghề trên địa bàn xã giai đoạn 2026 -2030', department: 'Phòng Kinh tế', time: 'Quý IV/2026' },
+        { no: 1, content: 'Chương trình Phát triển văn hóa, xây dựng người Phúc Thọ thanh lịch, văn minh, nghĩa tình giai đoạn 2026-2030', department: 'Phòng Văn hóa - Xã hội', time: 'Quý I/2026' },
+        { no: 2, content: 'Đề án bảo tồn, tôn tạo và phát huy các giá trị di sản văn hóa vật thể và phi vật thể trên địa bàn xã giai đoạn 2026 -2030', department: 'Phòng Văn hóa - Xã hội', time: 'Quý III/2026' },
+        { no: 3, content: 'Kế hoạch phát triển sự nghiệp giáo dục và đào tạo xã Phúc Thọ giai đoạn 2026 -2030', department: 'Phòng Văn hóa - Xã hội', time: 'Quý II/2026' },
+        { no: 4, content: 'Kế hoạch bảo vệ, chăm sóc và nâng cao sức khỏe nhân dân xã Phúc Thọ giai đoạn 2026 -2030', department: 'Trạm y tế xã', time: 'Quý II/2026' },
+        { no: 1, content: 'Kế hoạch đảm bảo quốc phòng, quân sự địa phương xã Phúc Thọ 05 năm 2026 -2030', department: 'BCH Quân sự', time: 'Quý I/2026' },
+        { no: 2, content: 'Kế hoạch đảm bảo an ninh chính trị, trật tự an toàn xã hội trên địa bàn xã giai đoạn 2026 -2030', department: 'Công an xã', time: 'Quý I/2026' },
+        { no: 1, content: 'Kế hoạch rà soát, vị trí việc làm tại các cơ quan, đơn vị thuộc UBND xã', department: 'Phòng Văn hóa - Xã hội', time: 'Quý III, IV/2025' },
+        { no: 2, content: 'Kế hoạch cải cách hành chính xã Phúc Thọ giai đoạn 2026 -2030', department: 'Phòng Văn hóa - Xã hội', time: 'Quý I/2026' },
+        { no: 3, content: 'Kế hoạch đào tạo, bồi dưỡng nâng cao chất lượng đội ngũ cán bộ, công chức, viên chức xã Phúc Thọ giai đoạn 2026 -2030', department: 'Phòng Văn hóa - Xã hội', time: 'Quý I/2026' },
+        { no: 4, content: 'Kế hoạch duy trì thứ hạng cao của xã về chỉ số Cải cách hành chính (PAR INDEX); Chỉ số Hiệu quả quản trị và hành chính công (PAPI) và Chỉ số hài lòng của người dân, tổ chức...', department: 'Phòng Văn hóa - Xã hội', time: 'Hàng năm' },
+    ]
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    const chartsContainer = document.getElementById('charts-container');
+    const chartTabs = document.getElementById('chart-tabs');
+    const breakthroughContainer = document.querySelector('#dot-pha .grid');
+    const economicZonesContainer = document.getElementById('economic-zones-container');
+    const taskTableBody = document.getElementById('task-table-body');
+    const taskSearch = document.getElementById('task-search');
+    const departmentFilter = document.getElementById('department-filter');
+    const yearFilter = document.getElementById('year-filter');
+    const noResults = document.getElementById('no-results');
+    
+    let chartInstances = [];
+
+    function renderCharts(category) {
+        chartsContainer.innerHTML = '';
+        chartInstances.forEach(chart => chart.destroy());
+        chartInstances = [];
+
+        const chartsToRender = AppData.charts[category];
+        chartsToRender.forEach(chartData => {
+            const chartWrapper = document.createElement('div');
+            chartWrapper.className = 'bg-white p-4 rounded-xl shadow-md border border-slate-200';
+            
+            const title = document.createElement('h3');
+            title.className = 'text-center font-semibold text-slate-700 mb-4';
+            title.textContent = chartData.title;
+            chartWrapper.appendChild(title);
+
+            const chartContainerDiv = document.createElement('div');
+            chartContainerDiv.className = 'chart-container';
+            const canvas = document.createElement('canvas');
+            chartContainerDiv.appendChild(canvas);
+            chartWrapper.appendChild(chartContainerDiv);
+            
+            if (chartData.target) {
+                const targetText = document.createElement('p');
+                targetText.className = 'text-center text-2xl font-bold mt-2';
+                targetText.textContent = chartData.target;
+                targetText.style.color = chartData.borderColor[0];
+                chartWrapper.appendChild(targetText);
+            }
+
+            chartsContainer.appendChild(chartWrapper);
+
+            const ctx = canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: chartData.type,
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: chartData.title,
+                        data: chartData.data,
+                        backgroundColor: chartData.backgroundColor,
+                        borderColor: chartData.borderColor,
+                        borderWidth: chartData.type === 'bar' ? 1 : 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: chartData.type !== 'bar',
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        if (chartData.type === 'bar') {
+                                           label += new Intl.NumberFormat('vi-VN').format(context.parsed.y);
+                                        } else {
+                                           label += context.parsed + '%';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            display: chartData.type === 'bar',
+                            beginAtZero: true
+                        },
+                        x: {
+                            display: chartData.type === 'bar'
+                        }
+                    }
+                }
+            });
+            chartInstances.push(chart);
+        });
+    }
+
+    chartTabs.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            chartTabs.querySelector('.active').classList.remove('active');
+            e.target.classList.add('active');
+            renderCharts(e.target.dataset.chart);
+        }
+    });
+    
+    function renderBreakthroughs() {
+        AppData.breakthroughs.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card-flip h-64 cursor-pointer group';
+            card.innerHTML = `
+                <div class="card-flip-inner rounded-xl shadow-lg">
+                    <div class="card-front bg-white border border-slate-200 group-hover:shadow-xl transition-shadow">
+                        <span class="text-5xl mb-4">${item.icon}</span>
+                        <h3 class="text-xl font-bold text-slate-800 text-center">${item.title}</h3>
+                        <p class="text-slate-500 mt-2 text-center text-sm">${item.description}</p>
+                    </div>
+                    <div class="card-back bg-blue-600 text-white border border-blue-700 items-start text-left">
+                         <h4 class="text-lg font-bold mb-2">${item.title}</h4>
+                         <p class="text-sm">${item.details}</p>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', () => {
+                card.classList.toggle('flipped');
+            });
+            breakthroughContainer.appendChild(card);
+        });
+    }
+
+    function renderEconomicZones() {
+        AppData.economicZones.forEach(zone => {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-6 rounded-xl shadow-md border border-slate-200 text-center hover:shadow-lg hover:-translate-y-1 transition-all';
+            card.innerHTML = `
+                <div class="text-4xl mb-4">${zone.icon}</div>
+                <h3 class="font-bold text-lg text-slate-800 mb-2">${zone.title}</h3>
+                <p class="text-slate-600 text-sm">${zone.description}</p>
+            `;
+            economicZonesContainer.appendChild(card);
+        });
+    }
+
+    function populateFilters() {
+        const departments = [...new Set(AppData.tasks.map(task => task.department))];
+        departments.sort().forEach(dep => {
+            const option = document.createElement('option');
+            option.value = dep;
+            option.textContent = dep;
+            departmentFilter.appendChild(option);
+        });
+    }
+
+    function renderTasks() {
+        const searchTerm = taskSearch.value.toLowerCase();
+        const selectedDept = departmentFilter.value;
+        const selectedYear = yearFilter.value;
+
+        const filteredTasks = AppData.tasks.filter(task => {
+            const matchesSearch = task.content.toLowerCase().includes(searchTerm);
+            const matchesDept = selectedDept === 'all' || task.department === selectedDept;
+            const matchesYear = selectedYear === 'all' || 
+                (selectedYear === 'annual' && task.time.toLowerCase() === 'hàng năm') ||
+                task.time.includes(selectedYear);
+            return matchesSearch && matchesDept && matchesYear;
+        });
+
+        taskTableBody.innerHTML = '';
+        if (filteredTasks.length === 0) {
+            noResults.classList.remove('hidden');
+        } else {
+            noResults.classList.add('hidden');
+            filteredTasks.forEach((task, index) => {
+                const row = document.createElement('tr');
+                row.className = 'bg-white border-b hover:bg-slate-50';
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${index + 1}</td>
+                    <td class="px-6 py-4">${task.content}</td>
+                    <td class="px-6 py-4">${task.department}</td>
+                    <td class="px-6 py-4">${task.time}</td>
+                `;
+                taskTableBody.appendChild(row);
+            });
+        }
+    }
+
+    taskSearch.addEventListener('input', renderTasks);
+    departmentFilter.addEventListener('change', renderTasks);
+    yearFilter.addEventListener('change', renderTasks);
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('main section');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 80) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').substring(1) === current) {
+                link.classList.add('active');
+            }
+        });
+    });
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector(link.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Initial renders
+    renderCharts('kinhte');
+    renderBreakthroughs();
+    renderEconomicZones();
+    populateFilters();
+    renderTasks();
+});
+</script>
+</body>
+</html>
